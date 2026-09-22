@@ -1,0 +1,6 @@
+name: Despliegue en Google Cloud
+
+on:
+    push:
+        branches:
+            - "*"
