@@ -4,3 +4,31 @@ on:
     push:
         branches:
             - "*"
+
+jobs:
+    deploy:
+        name: Despliegue
+        runs-on: ububtu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - id: auth
+              name: "Auntenticando Google Cloud"
+              uses: "google-github-actions/auth@v2"
+              with:
+                credencials_json: "${{ secrets.GOOGLE_CREDENTIALS }}"
+            
+             _id: delete
+             name: "Eliminando servicio existente"
+             run: |
+                gcloud run services delete funcion-gerson --region=us-central1 --quiet || true
+
+            - id:
+                name: "Desplegando en Google Cloud"
+                uses: "google-github-actions/deploy-cloud-functions@v3"
+                timeout-minutes: 10
+                with:
+                    name: "funcion-gerson"
+                    runtime: "python312"
+                    entry-point: "hello_http"
+                    region: "us-central1"
